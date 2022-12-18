@@ -43,19 +43,19 @@ shinyApp(
   }
 )
 
-# get test data
+# Implement own example ----
 
 test_data <- tibble(
-  stimulus = c(
+  Item = c(
     "Geringes Schlafbedürfnis", "Interessensverlust oder Freudlosigkeit",
     "Agitation oder Verlangsamung", "Konzetrationsschwäche oder Inhibition"
   ),
-  true = rep("true", 4),
-  false = rep("false", 4)
+  Richtig = rep(1, 4),
+  Falsch = rep(2, 4)
 ) %>%
   mutate(across(
-    .cols = true:false,
-    .fns = ~ sprintf('<input type="radio" name="%s" value="%s"/>', stimulus, .x)
+    .cols = Richtig:Falsch,
+   .fns = ~ sprintf('<input type="radio" name="%s" value="%s"/>', Item, .x)
   ))
 
 title <- paste0(
@@ -63,21 +63,27 @@ title <- paste0(
   "mit einer einzigen Episode einer schweren depressiven Störung nach ICD-10"
 )
 
-datatable(test_data, escape = FALSE, options = list(dom = "t", paging = FALSE, ordering = FALSE))
+datatable(test_data, escape = FALSE, options = list(dom = "t", 
+                                                    paging = FALSE, 
+                                                    ordering = FALSE,
+                                                    fullwidth = FALSE))
 
 ui <- fluidPage(
-  title = "Test",
+  title = titlePanel("Shiny Test: Kprim"),
+  h4(title),
   DT::dataTableOutput("table")
   )
 
 server <- function(input, output, session) {
   output$table <- DT::renderDataTable(
     expr = test_data,
-    escape = FALSE, 
-    selection = "none", 
+    escape = FALSE,
+    selection = "none",
     server = FALSE,
     options = list(dom = "t", paging = FALSE, ordering = FALSE)
-    )
+  )
 }
 
 shinyApp(ui, server)
+
+
